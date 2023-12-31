@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 
-const Connect_String = "mongodb+srv://phugia:Z50j1tmo@atlascluster.hhqailb.mongodb.net/?retryWrites=true&w=majority";
+
+const Connect_String = "mongodb+srv://phugia:Z50j1tmo@cluster0.x4dz0k0.mongodb.net/?retryWrites=true&w=majority";
 
 class Database {
   constructor() {
@@ -20,6 +21,7 @@ class Database {
     }
   }
 
+
   // Get instance
   static getInstance() {
     if (!Database.instance) {
@@ -28,6 +30,7 @@ class Database {
     return Database.instance;
   }
 }
+
 
 const instanceMongoDb = Database.getInstance();
 
