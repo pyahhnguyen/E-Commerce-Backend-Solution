@@ -1,6 +1,14 @@
+const { checkPrime } = require('crypto');
 const express = require('express');
 const router = express.Router();
+const {apikey, permission} = require('../auth/checkAuth')
 
+
+//check apiKey
+router.use(apikey);
+
+//check permission 
+router.use(permission('0000'))
 
 router.use('/v1/api', require('./access'));
 // Root route
