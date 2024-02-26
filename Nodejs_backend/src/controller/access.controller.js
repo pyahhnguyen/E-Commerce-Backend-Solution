@@ -22,9 +22,11 @@ class AccessController {
     signUp = async(req, res, next ) => {
       new Created({
         message: 'Resgister OK!',
-        metadata:  await AccessService.signUp(req.body)
-      }).send(res)s
-
+        metadata:  await AccessService.signUp(req.body),
+        options:{
+          limit: 10
+        }
+      }).send(res)
         // return res.status(201).json(await AccessService.signUp(req.body))
      }
 

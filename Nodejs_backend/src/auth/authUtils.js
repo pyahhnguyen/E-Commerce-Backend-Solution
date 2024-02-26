@@ -64,14 +64,16 @@ const authentication  = asyncHandler(async (req, res, next) => {
     if(!accessToken) throw new AuthFailureError('Invalid Request')
 
     try {
-        const decode = JWT.verify(accessToken, keyStore.publicKey)
-        if( userId !== decode.userId) throw new AuthFailureError('Invalid Request')
+        const decodeUser = JWT.verify(accessToken, keyStore.publicKey)
+        if( userId !== decodeUser.userId) throw new AuthFailureError('Invalid Request')
         req.keyStore = keyStore
         return next()
     } catch (error) {
         throw error
     }          
 })
+
+
 
 module.exports = {
     createTokenPair,
