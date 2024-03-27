@@ -49,7 +49,6 @@ const clothingSchema = new Schema({
     collection: 'clothes',
     timestamps: true,
 })
-
 // define the electronic type
 const electronicSchema = new Schema({
     manufacturer: { type: String, required: true},

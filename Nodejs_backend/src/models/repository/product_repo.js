@@ -1,6 +1,4 @@
 'use strict'
-
-
 const { product, clothing, electronic, furniture } = require('../../models/product.model');
 const {Types } = require('mongoose')
 const { BadRequestError } = require('../../core/error.response');
@@ -27,8 +25,30 @@ const  publishProductByShop = async({product_shop, product_id}) => {
     foundShop.isPublished = true
     const {modifiedCount} = await foundShop.updateOne(foundShop)
     return modifiedCount    
+}
+
+// unpublish product
+const  unPublishProductByShop = async({product_shop, product_id}) => {
+    const foundShop = await product.findOne({
+        product_shop: new Types.ObjectId(product_shop),
+        _id: new Types.ObjectId(product_id)
+    })       
+    if(!foundShop) return null
+
+    foundShop.isDraft = true
+    foundShop.isPublished = false
+    const {modifiedCount} = await foundShop.updateOne(foundShop)
+    return modifiedCount    
+}
+
+
+// search  product
+const searchProducts = async({keySearch}) => {
+    const regexSearch = new RegExp(keySearch)
+    const result = await product.find({})
 
 }
+
 
 
 const queryproduct = async ({query, limit , skip}) => {
@@ -43,7 +63,8 @@ const queryproduct = async ({query, limit , skip}) => {
 module.exports = {
     findAllDraftForShop,
     publishProductByShop,
-    findAllPublishedForShop
+    findAllPublishedForShop,
+    unPublishProductByShop
 }
 
 

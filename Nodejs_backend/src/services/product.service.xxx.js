@@ -2,7 +2,7 @@
 
 const { product, clothing, electronic, furniture } = require('../models/product.model');
 const { BadRequestError } = require('../core/error.response');
-const { findAllDraftForShop, publishProductByShop, findAllPublishedForShop } = require('../models/repository/product_repo');
+const { findAllDraftForShop, publishProductByShop, findAllPublishedForShop, unPublishProductByShop } = require('../models/repository/product_repo');
 //define a factory class to create a product 
 class ProductFactory {
     /*
@@ -34,6 +34,16 @@ class ProductFactory {
     static async publishProductByShop({product_shop, product_id}) {
         return await publishProductByShop({product_shop, product_id})
     }    
+
+    // unpublish product
+    static async unPublishProductByShop({product_shop, product_id}) {
+        return await unPublishProductByShop({product_shop, product_id})
+    }    
+
+    // search product
+    static async searchProducts({keySearch}) {
+       
+    }
 }
 
 //define base product class 
@@ -73,7 +83,6 @@ class Clothing extends Product {
         return newProduct
     }
 }
-
 // Define sub-class for different product types electronic
 class Electronic extends Product {
 

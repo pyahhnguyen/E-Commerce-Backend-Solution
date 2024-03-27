@@ -11,6 +11,8 @@ router.post('/createProduct', asyncHandler(ProductController.createProduct))
 
 // publish product
 router.post('/publish/:id', asyncHandler(ProductController.publishProduct))
+// unpublish product
+router.post('/unpublish/:id', asyncHandler(ProductController.unPublishProduct))
 
 // query
 router.get('/drafts/all', asyncHandler(ProductController.getAllDraftProduct))
