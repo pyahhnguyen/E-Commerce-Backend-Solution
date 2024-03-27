@@ -60,11 +60,26 @@ class NotFoundError extends ErrorResponse {
     }
 
 
+<<<<<<< HEAD
+=======
+class ForbiddenError extends ErrorResponse {
+    
+        constructor(message = ReasonPhrases.FORBIDDEN, statusCode = StatusCodes.FORBIDDEN) {
+            super(message, statusCode)
+        }
+    }
+
+>>>>>>> main
 module.exports = {
     ConflictRequestError,
     BadRequestError,
     AuthFailureError,
+<<<<<<< HEAD
     NotFoundError
+=======
+    NotFoundError,
+    ForbiddenError
+>>>>>>> main
 }
 
 

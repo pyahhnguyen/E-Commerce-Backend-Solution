@@ -3,7 +3,10 @@ const express = require('express');
 const router = express.Router();
 const {apikey, permission} = require('../auth/checkAuth')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 //check apiKey
 router.use(apikey);
 
@@ -11,6 +14,12 @@ router.use(apikey);
 router.use(permission('0000'))
 
 router.use('/v1/api', require('./access'));
+<<<<<<< HEAD
+=======
+// product 
+
+router.use('/v1/api/product', require('./product'));
+>>>>>>> main
 // Root route
 router.get('/', (req, res) => {
     return res.status(200).json({ 
@@ -19,4 +28,10 @@ router.get('/', (req, res) => {
   });
   
   
+<<<<<<< HEAD
 module.exports = router;
+=======
+module.exports = router;  
+
+
+>>>>>>> main

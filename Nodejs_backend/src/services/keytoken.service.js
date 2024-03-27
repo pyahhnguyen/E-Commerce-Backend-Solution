@@ -10,7 +10,10 @@ class KeyTokenService {
             //     user: userId,
             //     publicKey,
             //     privateKey
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
             // })
             // return tokens ? publicKeyString : null
             
@@ -29,13 +32,34 @@ class KeyTokenService {
 
 
     static findByUserId = async (userId) => {
+<<<<<<< HEAD
         return await keytokenModel.findOne({ user: new ObjectId(userId) }).lean();
+=======
+        return await keytokenModel.findOne({ user: new ObjectId(userId) });
+>>>>>>> main
     }
     static removeKeyById = async (id) => {
         return await keytokenModel.deleteOne({ _id: new ObjectId(id) });
     }
 
+<<<<<<< HEAD
 // // Note:
+=======
+    static findByRefreshTokenUsed = async (refreshToken) => {
+        return await keytokenModel.findOne({ refreshTokensUsed: refreshToken }).lean();
+
+    }
+    static findByRefreshToken = async (refreshToken) => {
+        return await keytokenModel.findOne({ refreshToken})   
+    }
+
+    static deleteKeyByUserId = async (userId) => {
+        return await keytokenModel.deleteOne({ user: userId })
+    }
+
+
+// Note:
+>>>>>>> main
 // dành cho mấy bạn bị lỗi remove() của mongoose model thì: Theo ver mới của mongoose, remove() đã không còn nữa, nên mình phải dùng deleteOne() và truyền vào 1 filter nhé.
 // đây là đoạn code của mình:
 //     static removeTokenById = async ({ id }) => {
@@ -44,7 +68,10 @@ class KeyTokenService {
 //         })
 //         return result;
 //     }
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     // static findByUserId = async ( userId ) => {
     //     return await keytokenModel.findOne({user: Types.ObjectId(userId)}).lean()
     // }
@@ -52,8 +79,11 @@ class KeyTokenService {
     // static  removeKeyById = async (id) => {
     //     return await keytokenModel.remove(id)
     // }
+<<<<<<< HEAD
 
 
+=======
+>>>>>>> main
 }
 
 module.exports = KeyTokenService

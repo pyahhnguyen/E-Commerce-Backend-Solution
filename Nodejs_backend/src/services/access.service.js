@@ -1,15 +1,28 @@
 const shopModel = require("../models/shop.model");
+<<<<<<< HEAD
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenService = require("./keytoken.service");
 const { createTokenPair } = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { BadRequestError, ConflictRequestError } = require("../core/error.response");
+=======
+const keytokenModel = require("../models/keytoken.model");
+const bcrypt = require("bcrypt");
+const crypto = require("crypto");
+const KeyTokenService = require("./keytoken.service");
+const { createTokenPair, verifyJWT } = require("../auth/authUtils");
+const { getInfoData } = require("../utils");
+const { BadRequestError, ConflictRequestError, ForbiddenError, AuthFailureError } = require("../core/error.response");
+>>>>>>> main
 
 // service ///
 const {findByEmail} = require('./shop.service')
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
 const RoleShop = {
   SHOP: "SHOP",
   WRITER: "WRITER",
@@ -19,7 +32,57 @@ const RoleShop = {
 
 class AccessService {
 
+<<<<<<< HEAD
   // service logout
+=======
+
+// handle refresh token service 
+//  1 . check refreshToken in array used
+//  2 . if have , verify this refreshToken to tracking its user access system with this refreshToken 
+
+static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
+
+  const {userId, email} = user;
+  if(keyStore.refreshTokensUsed.includes(refreshToken)){
+    await KeyTokenService.deleteKeyByUserId(userId)
+    throw new ForbiddenError('Something wrong happened, please login again !')
+  }
+   
+  if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Shop not registered !')
+  const foundShop = await findByEmail({email})    
+  if(!foundShop) throw new AuthFailureError('Error: Shop not registered !')
+
+  // create new key pair
+  const tokens = await createTokenPair({userId, email}, keyStore.publicKey, keyStore.privateKey)
+ // update new key pair
+ if (keyStore) {
+  const filter = { refreshToken: refreshToken };
+  const update = {
+    $set: {
+      refreshToken: tokens.refreshToken,
+    },
+    $addToSet: {
+      refreshTokensUsed: refreshToken,
+    },
+  };
+  await keytokenModel.updateOne(filter, update);
+      // Rest of your code
+      return {
+        user,
+        tokens,
+      };
+    } else {
+      // Handle the case where no matching document is found
+      return {
+        status: "error",
+        code: 404,
+        message: "No document found for the given refreshToken",
+      };
+    }
+}
+
+  // service logout ===================
+>>>>>>> main
   static logout = async( keyStore ) => {
     const  deleteKey = await KeyTokenService.removeKeyById(keyStore._id)
     console.log('delKey :::', deleteKey)
@@ -44,7 +107,10 @@ class AccessService {
     // 2
     const match = bcrypt.compare(password, foundShop.password);
     if (!match) throw new AuthFailureError("Authentication error");
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
     // 3
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
@@ -106,7 +172,10 @@ class AccessService {
 
       const privateKey = crypto.randomBytes(64).toString("hex");
       const publicKey = crypto.randomBytes(64).toString("hex");
+<<<<<<< HEAD
 
+=======
+>>>>>>> main
       console.log({ privateKey, publicKey }); // save collection KeyStore
       const keyStore = await KeyTokenService.createKeyToken({
         userId: newShop._id,
@@ -148,3 +217,7 @@ class AccessService {
 }
 
 module.exports = AccessService;
+<<<<<<< HEAD
+=======
+  
+>>>>>>> main
