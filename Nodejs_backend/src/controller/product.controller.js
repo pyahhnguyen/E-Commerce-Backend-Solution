@@ -1,20 +1,20 @@
 'use strict'
 
-const { Ok, Created, SuccessResponse} = require('../core/success.response')
+const { Ok, Created, SuccessResponse } = require('../core/success.response')
 const ProductService = require("../services/product.service")
 const ProductServiceV2 = require("../services/product.service.xxx")
 
 
 class ProductController {
 
-    createProduct = async(req, res, next) => {
+    createProduct = async (req, res, next) => {
         new SuccessResponse({
             message: 'Create Product OK!',
             metadata: await ProductServiceV2.createProduct(req.body.product_type, {
                 ...req.body,
                 product_shop: req.user.userId
             }
-        )
+            )
         }).send(res)
     }
 
@@ -26,7 +26,7 @@ class ProductController {
        * @return {JSON} 
     * 
     */
-    getAllDraftProduct = async(req, res, next) => {
+    getAllDraftProduct = async (req, res, next) => {
         new SuccessResponse({
             message: 'Get list all draft product !!!',
             metadata: await ProductServiceV2.findAllDraftForShop({
@@ -35,8 +35,8 @@ class ProductController {
         }).send(res)
     }
 
-    
-    getAllPublishedProduct = async(req, res, next) => {
+
+    getAllPublishedProduct = async (req, res, next) => {
         new SuccessResponse({
             message: 'Get list all published product !!!',
             metadata: await ProductServiceV2.findAllPublishedForShop({
@@ -46,7 +46,7 @@ class ProductController {
     }
 
     // Publish product
-    publishProduct = async(req, res, next) => {
+    publishProduct = async (req, res, next) => {
         new SuccessResponse({
             message: 'Publish Product OK!',
             metadata: await ProductServiceV2.publishProductByShop({
@@ -58,7 +58,7 @@ class ProductController {
     }
 
     // Unpublish product
-    unPublishProduct = async(req, res, next) => {
+    unPublishProduct = async (req, res, next) => {
         new SuccessResponse({
             message: 'Unpublish Product OK!',
             metadata: await ProductServiceV2.unPublishProductByShop({
@@ -68,22 +68,13 @@ class ProductController {
         }).send(res)
     }
 
-
-
-
-
-
-        // new SuccessResponse({
-        //     message: 'Create Product OK!',
-        //     metadata: await ProductService.createProduct(req.body.product_type, {
-        //         ...req.body,
-        //         product_shop: req.user.userId
-        //     }
-        // )
-        // }).send(res)
-
-
-    
+    // Search product
+    getListSearchProduct = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Get list search product !!!',
+            metadata: await ProductServiceV2.searchProducts(req.params)
+        }).send(res)
+    }
 
 }
 
