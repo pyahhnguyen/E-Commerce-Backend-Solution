@@ -2,7 +2,7 @@
 
 const { product, clothing, electronic, furniture } = require('../models/product.model');
 const { BadRequestError } = require('../core/error.response');
-
+const { findAllDraftForShop, publishProductByShop, findAllPublishedForShop } = require('../models/repository/product_repo');
 //define a factory class to create a product 
 class ProductFactory {
     /*
@@ -11,7 +11,7 @@ class ProductFactory {
     static productRegistry  = {}   // key class
     static registerProductType(type, classRef) {
         ProductFactory.productRegistry[type] = classRef
-    }t
+    }
 
     static async createProduct( type, payload) {
         const productClass = ProductFactory.productRegistry[type]
@@ -19,7 +19,21 @@ class ProductFactory {
         return new productClass(payload).createProduct()
     }
 
-
+    // query //
+        /** Get all drafts product for shop  */
+    static async findAllDraftForShop({product_shop, limit = 50 , skip = 0}) {
+        const query = { product_shop, isDraft: true}
+        return await findAllDraftForShop({query, limit, skip})
+    }
+        /** Get all publish product for shop */
+    static async findAllPublishedForShop({product_shop, limit = 50 , skip = 0}) {
+        const query = { product_shop, isPublished: true}
+        return await findAllPublishedForShop({query, limit, skip})
+    }
+    // publish product
+    static async publishProductByShop({product_shop, product_id}) {
+        return await publishProductByShop({product_shop, product_id})
+    }    
 }
 
 //define base product class 
@@ -29,7 +43,6 @@ class Product {
         product_name, product_thumb, product_description, product_type,
         product_price, product_quantity, product_shop, product_attributes
     })
-
     {
         this.product_name = product_name;
         this.product_thumb = product_thumb;
@@ -77,7 +90,6 @@ class Electronic extends Product {
         return newProduct
     }
 }
-
 
 // Define sub-class for different product types electronic
 class Furniture extends Product {

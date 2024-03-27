@@ -1,7 +1,7 @@
 'use strict'
 
-const { model , Schema} = require('mongoose');
-
+const { model, Schema} = require('mongoose');
+const slugify = require('slugify')
 const DOCUMENT_NAME = 'Product'
 const COLLECTION_NAME = 'Products'
 
@@ -23,13 +23,22 @@ const productSchema = new Schema({
         max: [5,'Rating must be above 5.0'],
         // 4.39589589 = 4.3
         set:(val) => Math.round(val*10)/10
-    }
-    
+    },
+    product_variations :{ type: Array, default: []},
+    isDraft: { type: Boolean, default: true, index: true, select: false},
+    isPublished: { type: Boolean, default: false, index: true, select: false},
 
 },{
     collection: COLLECTION_NAME,
     timestamps: true,
 })
+
+// Document middleware , run before .save() and .create()
+productSchema.pre('save', function(next){
+    this.product_slug = slugify(this.product_name, {lower:true})
+    next()
+}
+)
 
 // define the product type = clothing 
 const clothingSchema = new Schema({
