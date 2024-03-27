@@ -8,11 +8,11 @@ router.use(apikey);
 
 //check permission 
 router.use(permission('0000'))
-
-router.use('/v1/api', require('./access'));
 // product 
-
 router.use('/v1/api/product', require('./product'));
+// access
+router.use('/v1/api', require('./access'));
+
 // Root route
 router.get('/', (req, res) => {
     return res.status(200).json({ 

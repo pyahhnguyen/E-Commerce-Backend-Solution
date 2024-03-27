@@ -32,6 +32,8 @@ const productSchema = new Schema({
     collection: COLLECTION_NAME,
     timestamps: true,
 })
+// Create index for search
+productSchema.index({product_name: 'text', product_description: 'text'})
 
 // Document middleware , run before .save() and .create()
 productSchema.pre('save', function(next){
