@@ -86,8 +86,7 @@ class Electronic extends Product {
         return newProduct
     }
 }
-
-
+    
 module.exports =  ProductFactory;
 
 

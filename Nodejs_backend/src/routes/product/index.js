@@ -16,6 +16,8 @@ router.get('/:product_id', asyncHandler(ProductController.getProduct))
 router.use(authentication)
 // create product
 router.post('/createProduct', asyncHandler(ProductController.createProduct))
+// update product
+router.patch('/:productID', asyncHandler(ProductController.updateProduct))
 
 // publish product
 router.post('/publish/:id', asyncHandler(ProductController.publishProduct))
@@ -25,7 +27,5 @@ router.post('/unpublish/:id', asyncHandler(ProductController.unPublishProduct))
 // query
 router.get('/drafts/all', asyncHandler(ProductController.getAllDraftProduct))
 router.get('/published/all', asyncHandler(ProductController.getAllPublishedProduct))
-
-
 
 module.exports = router;

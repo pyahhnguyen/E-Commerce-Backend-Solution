@@ -8,6 +8,19 @@ const { getSelectData, unGetSelectData } = require('../../utils/index');
 const findAllDraftForShop = async ({ query, limit, skip }) => {
     return await queryproduct({ query, limit, skip })
 }
+//update product
+const updateProductById = async ({ 
+    productID, 
+    bodyUpdate, 
+    model,
+    isNew  = true
+
+}) => {    
+    return await model.findByIdAndUpdate(productID, bodyUpdate,{
+        new: isNew,
+    })
+}
+    
 // find all published product for shop
 const findAllPublishedForShop = async ({ query, limit, skip }) => {
     return await queryproduct({ query, limit, skip })
@@ -91,7 +104,8 @@ module.exports = {
     unPublishProductByShop,
     searchProducts,
     findAllProducts,
-    findProducts
+    findProducts,
+    updateProductById
 }
 
 
