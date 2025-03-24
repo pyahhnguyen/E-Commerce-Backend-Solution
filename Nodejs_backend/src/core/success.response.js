@@ -38,11 +38,7 @@ class Created extends SuccessResponse {
 }
 
 module.exports = {
-<<<<<<< HEAD
-       Ok, Created, SuccessResponse
-=======
     Ok, Created, SuccessResponse
->>>>>>> main
 }
 
 
