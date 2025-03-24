@@ -1,7 +1,6 @@
 'use strict'
 
 const { Ok, Created, SuccessResponse } = require('../core/success.response')
-const ProductService = require("../services/product.service")
 const ProductServiceV2 = require("../services/product.service.xxx")
 
 
@@ -17,7 +16,16 @@ class ProductController {
             )
         }).send(res)
     }
-
+    // Update product
+    updateProduct = async (req, res, next) => {
+        new SuccessResponse({
+            message: 'Update Product OK!',
+            metadata: await ProductServiceV2.updateProduct(req.body.product_type, req.params.productID,{
+                ...req.body,
+                product_shop: req.user.userId,
+            })
+        }).send(res)
+    }
     // Query //
     /**
        * @description get all draft product  
@@ -34,7 +42,6 @@ class ProductController {
             })
         }).send(res)
     }
-
 
     getAllPublishedProduct = async (req, res, next) => {
         new SuccessResponse({
@@ -83,6 +90,8 @@ class ProductController {
             metadata: await ProductServiceV2.findAllProducts(req.query)
         }).send(res)
     }
+
+
     // Get product by id
     getProduct = async (req, res, next) => {
         new SuccessResponse({

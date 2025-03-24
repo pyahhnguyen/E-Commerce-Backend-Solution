@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 
-const Connect_String = "mongodb+srv://phugia:Z50j1tmo@cluster0.x4dz0k0.mongodb.net/?retryWrites=true&w=majority";
+const Connect_String = process.env.MONGO_URI || 'mongodb://localhost:27017/shopDev';
 
 class Database {
   constructor() {
