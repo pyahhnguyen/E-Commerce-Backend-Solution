@@ -8,6 +8,9 @@ router.use(apikey);
 
 //check permission 
 router.use(permission('0000'))
+
+//discount
+router.use('/v1/api/discount', require('./discount'))
 // product 
 router.use('/v1/api/product', require('./product'));
 // access

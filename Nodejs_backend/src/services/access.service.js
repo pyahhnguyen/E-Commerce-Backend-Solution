@@ -3,7 +3,7 @@ const keytokenModel = require("../models/keytoken.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
 const KeyTokenService = require("./keytoken.service");
-const { createTokenPair, verifyJWT } = require("../auth/authUtils");
+const { createTokenPair} = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { BadRequestError, ConflictRequestError, ForbiddenError, AuthFailureError } = require("../core/error.response");
 
@@ -31,7 +31,7 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
     await KeyTokenService.deleteKeyByUserId(userId)
     throw new ForbiddenError('Something wrong happened, please login again !')
   }
-   
+  // verify refreshToken  
   if(keyStore.refreshToken !== refreshToken) throw new AuthFailureError('Shop not registered !')
   const foundShop = await findByEmail({email})    
   if(!foundShop) throw new AuthFailureError('Error: Shop not registered !')
@@ -39,29 +39,29 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
   // create new key pair
   const tokens = await createTokenPair({userId, email}, keyStore.publicKey, keyStore.privateKey)
  // update new key pair
- if (keyStore) {
-  const filter = { refreshToken: refreshToken };
-  const update = {
-    $set: {
-      refreshToken: tokens.refreshToken,
-    },
-    $addToSet: {
-      refreshTokensUsed: refreshToken,
-    },
-  };
-  await keytokenModel.updateOne(filter, update);
-      // Rest of your code
-      return {
-        user,
-        tokens,
-      };
-    } else {
-      // Handle the case where no matching document is found
-      return {
-        status: "error",
-        code: 404,
-        message: "No document found for the given refreshToken",
-      };
+  if (keyStore) {
+    const filter = { refreshToken: refreshToken };
+    const update = {
+      $set: {
+        refreshToken: tokens.refreshToken,
+      },
+      $addToSet: {
+        refreshTokensUsed: refreshToken,
+      },
+    };
+    await keytokenModel.updateOne(filter, update);
+        // Rest of your code
+        return {
+          user,
+          tokens,
+        };
+      } else {
+        // Handle the case where no matching document is found
+        return {
+          status: "error",
+          code: 404,
+          message: "No document found for the given refreshToken",
+        };
     }
 }
 

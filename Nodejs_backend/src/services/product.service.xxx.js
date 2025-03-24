@@ -11,10 +11,10 @@ const { findAllDraftForShop,
     findProducts,
     updateProductById
 
-} = require('../models/repository/product_repo');
+} = require('../models/repository/product.repo');
 
-const { find } = require('lodash'); 
-const {getSelectData,removeundefinedObject, updateNestedObjectParser} = require('../utils/index')
+const {removeundefinedObject, updateNestedObjectParser} = require('../utils/index');
+const { insertInventory } = require('../models/repository/inventory.repo');
 //define a factory class to create a product 
 class ProductFactory {
     /*
@@ -37,18 +37,14 @@ class ProductFactory {
         if (!productClass) throw new BadRequestError(`Invalid product type  ${type}`)
         return new productClass(payload).updateProduct(productID)
     }   
-    // query //
-    /** Get all drafts product for shop  */
-    static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
-        const query = { product_shop, isDraft: true }
-        return await findAllDraftForShop({ query, limit, skip })
-    }
+
     /** Get all publish product for shop */
-    static async findAllPublishedForShop({ product_shop, limit = 50, skip = 0 }) {
+    static async findAllPublishedForShop({ product_shop, limit = 50, skip = 0 }) { 
+
         const query = { product_shop, isPublished: true }
         return await findAllPublishedForShop({ query, limit, skip })
     }
-    // publish product
+    // publish product - PUT 
     static async publishProductByShop({ product_shop, product_id }) {
         return await publishProductByShop({ product_shop, product_id })
     }
@@ -58,7 +54,13 @@ class ProductFactory {
         return await unPublishProductByShop({ product_shop, product_id })
     }
 
-    // search product
+      // query //
+    /** Get all drafts product for shop  */
+    static async findAllDraftForShop({ product_shop, limit = 50, skip = 0 }) {
+        const query = { product_shop, isDraft: true }
+        return await findAllDraftForShop({ query, limit, skip })
+    }
+    // search product 
     static async searchProducts({ keySearch }) {
         return await searchProducts({ keySearch })
     }
@@ -74,7 +76,7 @@ class ProductFactory {
         }
     }
 
-//define base product class 
+// define base product class  
 
 class Product {
     constructor({
@@ -93,7 +95,20 @@ class Product {
 
     // create new product 
     async createProduct(product_id) {
-        return await product.create({ ...this, _id: product_id })
+        const newProduct =  product.create({ ...this, _id: product_id })
+        // add new product to inventory
+
+            if (newProduct){
+                await insertInventory(
+                    {
+                        product_id: newProduct._id,
+                        shopId: this.product_shop,
+                        stock: this.product_quantity
+                    }
+                )
+            }
+
+        return newProduct
     }
 
     // update product 
@@ -107,7 +122,12 @@ class Product {
 class Clothing extends Product {
 
     async createProduct() {
-        const newClothing = await clothing.create(this.product_attributes)
+
+        const newClothing = await clothing.create({
+            ...this.product_attributes,
+            product_shop: this.product_shop
+        })
+
         if (!newClothing) throw new BadRequestError('Creare new clothing error')
 
         const newProduct = await super.createProduct()
@@ -117,7 +137,6 @@ class Clothing extends Product {
     }
 
 
-    
     // update product
     async updateProduct(productID) {
 
@@ -125,21 +144,22 @@ class Clothing extends Product {
          *  1 remove attributes has null, undefined, empty string
          * ! 2 check xem update cho nao 
          */
-        console.log(`[1]`, this)
-        const objectparam = removeundefinedObject(this)
-        console.log(`[2]`, objectparam)
-        if(objectparam.product_attributes){
-            //update chill
+        const objectParam = removeundefinedObject(this)
+
+        if(objectParam.product_attributes){
+
             updateProductById({
                 productID,
-                bodyUpdate: updateNestedObjectParser(objectparam.product_attributes), 
+                bodyUpdate: updateNestedObjectParser(objectParam.product_attributes), 
                 model: clothing })
         }
-        const updateProduct = await super.updateProduct(productID, updateNestedObjectParser(objectparam))
+        const updateProduct = await super.updateProduct(productID, updateNestedObjectParser(objectParam))
         return updateProduct
 
         }
 }
+
+
 // Define sub-class for different product types electronic
 class Electronic extends Product {
 
@@ -181,18 +201,4 @@ ProductFactory.registerProductType('Clothing', Clothing)
 ProductFactory.registerProductType('Furniture', Furniture)
 
 
-
-
 module.exports = ProductFactory;
-
-
-/* flow of the code 
-    !payload tu req.body duoc nhan tu req dua vao type se dong vai tro la q argument cua construct tuong 
-    ! voi type do (Clothing hoac Electronic) se tao ra 1 instance moi cua class Clothing 
-    * Boi vi than Clothing hoac Electronic no thua ke lai cua th class Product nen no se co tat ca method va o day co the goi 2 th nay la contructot 
-    --> payload dong vai tro la argument cho construtor Clothing hoac Electronic.
-    # Nen tai dong nay 
-    const newClothing = await clothing.create(this.product_attributes)
-    this.product_attributes duoc lay tu payload 
-    --> cai payload bay het vao contructor cua Clothing (thua ke tu Product) va co the truy xuat den cac phan tu trong construtor thong qua toan tu "this'"
-*/

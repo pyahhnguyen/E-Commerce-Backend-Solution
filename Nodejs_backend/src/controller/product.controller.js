@@ -1,7 +1,6 @@
 'use strict'
 
 const { Ok, Created, SuccessResponse } = require('../core/success.response')
-const ProductService = require("../services/product.service")
 const ProductServiceV2 = require("../services/product.service.xxx")
 
 
@@ -91,6 +90,8 @@ class ProductController {
             metadata: await ProductServiceV2.findAllProducts(req.query)
         }).send(res)
     }
+
+
     // Get product by id
     getProduct = async (req, res, next) => {
         new SuccessResponse({

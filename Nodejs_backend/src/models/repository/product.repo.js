@@ -1,5 +1,5 @@
 'use strict'
-const { product, clothing, electronic, furniture } = require('../../models/product.model');
+const { product, clothing, electronic, furniture } = require('../product.model');
 const { Types } = require('mongoose')
 const { BadRequestError } = require('../../core/error.response');
 const { getSelectData, unGetSelectData } = require('../../utils/index');
@@ -97,6 +97,8 @@ const queryproduct = async ({ query, limit, skip }) => {
         .lean()
         .exec()
 }
+
+
 module.exports = {
     findAllDraftForShop,
     publishProductByShop,
