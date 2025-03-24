@@ -1,12 +1,4 @@
 const shopModel = require("../models/shop.model");
-<<<<<<< HEAD
-const bcrypt = require("bcrypt");
-const crypto = require("crypto");
-const KeyTokenService = require("./keytoken.service");
-const { createTokenPair } = require("../auth/authUtils");
-const { getInfoData } = require("../utils");
-const { BadRequestError, ConflictRequestError } = require("../core/error.response");
-=======
 const keytokenModel = require("../models/keytoken.model");
 const bcrypt = require("bcrypt");
 const crypto = require("crypto");
@@ -14,15 +6,10 @@ const KeyTokenService = require("./keytoken.service");
 const { createTokenPair} = require("../auth/authUtils");
 const { getInfoData } = require("../utils");
 const { BadRequestError, ConflictRequestError, ForbiddenError, AuthFailureError } = require("../core/error.response");
->>>>>>> main
 
 // service ///
 const {findByEmail} = require('./shop.service')
 
-<<<<<<< HEAD
-
-=======
->>>>>>> main
 const RoleShop = {
   SHOP: "SHOP",
   WRITER: "WRITER",
@@ -32,9 +19,6 @@ const RoleShop = {
 
 class AccessService {
 
-<<<<<<< HEAD
-  // service logout
-=======
 
 // handle refresh token service 
 //  1 . check refreshToken in array used
@@ -82,7 +66,6 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
 }
 
   // service logout ===================
->>>>>>> main
   static logout = async( keyStore ) => {
     const  deleteKey = await KeyTokenService.removeKeyById(keyStore._id)
     console.log('delKey :::', deleteKey)
@@ -107,10 +90,6 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
     // 2
     const match = bcrypt.compare(password, foundShop.password);
     if (!match) throw new AuthFailureError("Authentication error");
-<<<<<<< HEAD
-
-=======
->>>>>>> main
     // 3
     const privateKey = crypto.randomBytes(64).toString("hex");
     const publicKey = crypto.randomBytes(64).toString("hex");
@@ -172,10 +151,6 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
 
       const privateKey = crypto.randomBytes(64).toString("hex");
       const publicKey = crypto.randomBytes(64).toString("hex");
-<<<<<<< HEAD
-
-=======
->>>>>>> main
       console.log({ privateKey, publicKey }); // save collection KeyStore
       const keyStore = await KeyTokenService.createKeyToken({
         userId: newShop._id,
@@ -217,7 +192,4 @@ static handleRefreshToken = async ({refreshToken, user, keyStore}) => {
 }
 
 module.exports = AccessService;
-<<<<<<< HEAD
-=======
   
->>>>>>> main
