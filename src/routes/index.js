@@ -9,7 +9,8 @@ router.use(apikey);
 //check permission 
 router.use(permission('0000'))
 
-
+// checkout
+router.use('/v1/api/checkout', require('./checkout'));
 // cart
 router.use('/v1/api/cart', require('./cart'))
 //discount
