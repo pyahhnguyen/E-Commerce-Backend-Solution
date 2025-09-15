@@ -30,4 +30,4 @@ class InventoryService{
 }
 
 
-module.export = InventoryService
+module.exports = InventoryService

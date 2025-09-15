@@ -95,7 +95,7 @@ class Product {
 
     // create new product 
     async createProduct(product_id) {
-        const newProduct =  product.create({ ...this, _id: product_id })
+        const newProduct = await product.create({ ...this, _id: product_id })
         // add new product to inventory
 
             if (newProduct){
@@ -141,8 +141,8 @@ class Clothing extends Product {
     async updateProduct(productID) {
 
         /***
-         *  1 remove attributes has null, undefined, empty string
-         * ! 2 check xem update cho nao 
+         *  remove attributes has null, undefined, empty string
+
          */
         const objectParam = removeundefinedObject(this)
 
