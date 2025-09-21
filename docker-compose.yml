@@ -1,0 +1,98 @@
+version: '3.8'
+
+services:
+  # Main API Application
+  api:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+    container_name: shop-ecommerce-api
+    ports:
+      - "3055:3050"
+    env_file:
+      - .env.development
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./uploads:/app/uploads
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:3050/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # MongoDB Database
+  mongodb:
+    image: mongo:6-jammy
+    container_name: shop-mongodb
+    ports:
+      - "27017:27017"
+    environment:
+      - MONGO_INITDB_DATABASE=shopDev
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_USER}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_PASS}
+    volumes:
+      - mongodb_data:/data/db
+      - ./src/configs/mongo:/docker-entrypoint-initdb.d
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "mongosh", "--eval", "db.adminCommand('ping')"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache & Pub/Sub
+  redis:
+    image: redis:7-alpine
+    container_name: shop-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+      - ./src/configs/redis/redis.conf:/usr/local/etc/redis/redis.conf
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+    command: redis-server /usr/local/etc/redis/redis.conf
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # Nginx Reverse Proxy & Load Balancer
+  nginx:
+    image: nginx:alpine
+    container_name: shop-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./src/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./src/configs/nginx/nginx.conf/ssl:/etc/nginx/ssl
+    depends_on:
+      - api
+    networks:
+      - ecommerce-network
+    restart: unless-stopped
+  
+
+volumes:
+  mongodb_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  ecommerce-network:
+    driver: bridge
