@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shop-ecommerce-api
+  namespace: shop-ecommerce
+  labels:
+    app: shop-ecommerce-api
+spec:
+  replicas: 3
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  selector:
+    matchLabels:
+      app: shop-ecommerce-api
+  template:
+    metadata:
+      labels:
+        app: shop-ecommerce-api
+    spec:
+      containers:
+      - name: api
+        image: shop-ecommerce:latest
+        ports:
+        - containerPort: 3050
+        envFrom:
+        - configMapRef:
+            name: shop-ecommerce-config
+        - secretRef:
+            name: shop-ecommerce-secrets
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "250m"
+          limits:
+            memory: "1Gi"
+            cpu: "1"
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 3050
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          timeoutSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          httpGet:
+            path: /health
+            port: 3050
+          initialDelaySeconds: 5
+          periodSeconds: 5
+          timeoutSeconds: 3
+          failureThreshold: 3
+        volumeMounts:
+        - name: uploads-storage
+          mountPath: /app/uploads
+        - name: logs-storage
+          mountPath: /app/logs
+      volumes:
+      - name: uploads-storage
+        persistentVolumeClaim:
+          claimName: uploads-pvc
+      - name: logs-storage
+        persistentVolumeClaim:
+          claimName: logs-pvc
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: shop-ecommerce-api-service
+  namespace: shop-ecommerce
+spec:
+  selector:
+    app: shop-ecommerce-api
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3050
+  type: ClusterIP

@@ -79,7 +79,7 @@ services:
       - "443:443"
     volumes:
       - ./src/configs/nginx/nginx.conf:/etc/nginx/nginx.conf
-      - ./src/configs/nginx/nginx.conf/ssl:/etc/nginx/ssl
+      - ./src/configs/nginx/ssl:/etc/nginx/ssl
     depends_on:
       - api
     networks:

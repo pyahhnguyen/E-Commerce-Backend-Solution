@@ -33,7 +33,7 @@ class Database {
 
     // Try Atlas first if provided
     if (atlasUri) {
-      console.log('Testing Atlas connection...');
+      // console.log('Testing Atlas connection...');
       const atlasAccessible = await this.testConnection(atlasUri, timeout);
       
       if (atlasAccessible) {

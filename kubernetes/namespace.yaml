@@ -1,0 +1,7 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: shop-ecommerce
+  labels:
+    name: shop-ecommerce
+    environment: production

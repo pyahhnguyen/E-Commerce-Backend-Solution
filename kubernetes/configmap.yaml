@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: shop-ecommerce-config
+  namespace: shop-ecommerce
+data:
+  NODE_ENV: "production"
+  PORT: "3050"
+  MONGODB_URI: "mongodb://mongodb-service:27017/shopecommerce"
+  REDIS_HOST: "redis-service"
+  REDIS_PORT: "6379"
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: shop-ecommerce-secrets
+  namespace: shop-ecommerce
+type: Opaque
+data:
+  # Base64 encoded values
+  MONGO_ROOT_USERNAME: YWRtaW4=  # admin
+  MONGO_ROOT_PASSWORD: c2hvcHBhc3N3b3JkMTIz  # shoppassword123
+  REDIS_PASSWORD: cmVkaXNwYXNzMTIz  # redispass123
+  JWT_SECRET: bXlzZWNyZXRqd3R0b2tlbmZvcnNob3A=  # mysecretjwttokenforshop
